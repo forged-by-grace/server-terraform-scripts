@@ -2,11 +2,11 @@ resource "aws_instance" "web" {
   ami                    = "ami-0287a05f0ef0e9d9a"      #change ami id for different region
   instance_type          = "t2.large"
   key_name               = "Linux-VM-Key7"              #change key name as per your setup
-  vpc_security_group_ids = [aws_security_group.Jenkins-VM-SG.id]
+  vpc_security_group_ids = [aws_security_group.SonarQube-VM-SG.id]
   user_data              = templatefile("./install.sh", {})
 
   tags = {
-    Name = "Jenkins-SonarQube"
+    Name = "SonarQube"
   }
 
   root_block_device {
@@ -14,12 +14,12 @@ resource "aws_instance" "web" {
   }
 }
 
-resource "aws_security_group" "Jenkins-VM-SG" {
-  name        = "Jenkins-VM-SG"
+resource "aws_security_group" "SonarQube-VM-SG" {
+  name        = "SonarQube-VM-SG"
   description = "Allow TLS inbound traffic"
 
   ingress = [
-    for port in [22, 80, 443, 8080, 9000, 3000] : {
+    for port in [22, 80, 443, 9000] : {
       description      = "inbound rules"
       from_port        = port
       to_port          = port
@@ -40,6 +40,6 @@ resource "aws_security_group" "Jenkins-VM-SG" {
   }
 
   tags = {
-    Name = "Jenkins-VM-SG"
+    Name = "SonarQube-VM-SG"
   }
 }
